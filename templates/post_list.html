@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% block head_title %}list | {{block.super }} {% endblock %}
+{% block header %}
+<header class="masthead" style="background-image: url('img/home-bg.jpg')">
+	<div class="overlay"></div>
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-8 col-md-10 mx-auto">
+				<div class="site-heading">
+					<h1>Tiny Pencil Blog</h1>
+ 					<span class="subheading">Write your thoughts.</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</header>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+	<div class="col-lg-8 col-md-10 mx-auto">
+		<h1>{{ title }}</h1>
+		<form method='GET' action='' class="row">		
+			<div class="col-lg-6">
+    			<div class="input-group">
+      				<input type="text" class="form-control" placeholder="Search for..." name="q" value="{{ request.GET.q }}">
+      				</input>
+      				<span class="input-group-btn">
+        				<button class="btn btn-default" type="button"><i class="fa fa-search"></i></button>
+      				</span>
+    			</div>
+  			</div>
+		</form>
+		{% for obj in queryset %}
+			<div class="post-preview">
+			{% if obj.image %}
+				<img src="{{ obj.image.url }}" class="img-fluid" alt="Responsive image" >
+			{% endif %}
+			{% if obj.draft %}
+				<span style='color:red;'>Draft</span> 
+			{% endif %}
+			{% if obj.publish > today %}
+				<h3>Future Post</h3>
+			{% endif %}
+                <a href="{{ obj.get_absolute_url }}">
+					<h2 class="post-title">
+						{{ obj.title }}
+						<small>
+							{{ obj.publish|timesince }} ago
+						</small>
+					</h2>
+					<h3 class="post-subtitle">
+						{{ obj.get_markdown | truncatechars_html:30 | linebreaks}}
+					</h3>
+				</a>
+				<p class="post-meta">
+					Posted
+					{% if obj.user.get_full_name %}
+					 by
+					<a href="#">
+						{{ obj.user.get_full_name }}
+					</a>
+					{% endif %}
+					on
+					{{ obj.publish }}
+				</p>
+				<p>
+					<a href="{{ obj.get_absolute_url }}" class="btn btn-primary" role="button">View</a>
+				</p>
+			</div>
+			<hr>
+		{% endfor %}
+		<div class="pagination">
+    		<span class="step-links">
+	        {% if queryset.has_previous %}
+	            <a href="?page={{ queryset.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">previous</a>
+	        {% endif %}
+	        <span class="current">Page {{ queryset.number }} of {{ queryset.paginator.num_pages }}.
+	        </span>
+	        {% if queryset.has_next %}
+	            <a href="?page={{ queryset.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">next</a>
+	        {% endif %}
+    		</span>
+		</div>
+		<div class="clearfix">
+			<a class="btn btn-primary float-right" href="#">Older Posts &rarr;</a>
+		</div>
+	</div>
+</div>
+{% endblock %}

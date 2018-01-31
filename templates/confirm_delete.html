@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block head_title %} {{ instance.title }} | {{block.super }} {% endblock %}
+{% load crispy_forms_tags %}
+{% block post_detail_link %}
+	<li class="breadcrumb-item"><a href="{{ instance.get_absolute_url }}">{{ instance.title }}</a></li>
+{% endblock %}
+{% block content %}
+<div class="row">
+	<div class="col-sm-5 mx-auto">
+		<h1>Confirm Delete</h1>
+		<form method="POST" action="">
+			{% csrf_token %}
+			<p>Are you sure you want to delete: "{{ instance.content }}" ?</p>
+			<input type="submit" name="Confirm" class="btn btn-warning" value="Confirm">
+			<a href="{{ instance.get_absolute_url }}" class="btn btn-default">Cancel</a>
+			<br>
+		</form>
+		<hr>
+	</div>
+</div>
+{% endblock %}
